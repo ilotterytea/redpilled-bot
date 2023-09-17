@@ -39,3 +39,14 @@ void TwitchIRCClient::connect() {
 
   this->ws.start();
 }
+
+void TwitchIRCClient::join(std::string channelName) {
+  std::string str = "JOIN #" + channelName;
+
+  if (this->ws.getReadyState() != ix::ReadyState::Open) {
+    this->pool.push_back(str);
+  } else {
+    this->ws.send(str);
+    this->joinedChannels.push_back(channelName);
+  }
+}
