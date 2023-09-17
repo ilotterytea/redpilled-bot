@@ -50,3 +50,8 @@ void TwitchIRCClient::join(std::string channelName) {
     this->joinedChannels.push_back(channelName);
   }
 }
+
+void TwitchIRCClient::say(std::string channelName, std::string message) {
+  this->ws.send(std::string("PRIVMSG #") + channelName + std::string(" :") +
+                message);
+}

@@ -7,6 +7,7 @@ public:
   TwitchIRCClient(std::string username, std::string password);
   void connect();
   void join(std::string channelName);
+  void say(std::string channelName, std::string message);
 
 private:
   std::string username;
