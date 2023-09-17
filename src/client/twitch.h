@@ -1,3 +1,4 @@
+#include "twitch_message.h"
 #include <ixwebsocket/IXWebSocket.h>
 #include <string>
 #include <vector>
@@ -8,6 +9,18 @@ public:
   void connect();
   void join(std::string channelName);
   void say(std::string channelName, std::string message);
+  template <IRCMessageType E> void on(typename MessageHandler<E>::fn function) {
+    switch (E) {
+    case PrivmsgMessage: {
+
+      this->_onPrivmsgMessage = function;
+      break;
+    }
+    default: {
+      break;
+    }
+    }
+  }
 
 private:
   std::string username;
@@ -19,4 +32,7 @@ private:
   std::vector<std::string> joinedChannels;
 
   void run();
+
+  // Handlers
+  typename MessageHandler<IRCMessageType::PrivmsgMessage>::fn _onPrivmsgMessage;
 };
