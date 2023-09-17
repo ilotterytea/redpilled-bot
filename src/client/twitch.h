@@ -1,5 +1,6 @@
 #include <ixwebsocket/IXWebSocket.h>
 #include <string>
+#include <vector>
 
 class TwitchIRCClient {
 public:
@@ -11,6 +12,9 @@ private:
   std::string password;
   std::string host;
   ix::WebSocket ws;
+
+  std::vector<std::string> pool;
+  std::vector<std::string> joinedChannels;
 
   void run();
 };
