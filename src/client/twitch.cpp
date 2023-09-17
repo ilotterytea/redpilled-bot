@@ -32,6 +32,22 @@ void TwitchIRCClient::connect() {
       this->ws.send("CAP REQ :twitch.tv/membership");
       this->ws.send("CAP REQ :twitch.tv/commands");
       this->ws.send("CAP REQ :twitch.tv/tags");
+
+      if (!this->pool.empty()) {
+        std::cout << "Sending messages from pool..." << std::endl;
+
+        for (std::string msg : this->pool) {
+          this->ws.send(msg);
+        }
+
+        this->pool.clear();
+        std::cout << "Sent all messages from pool!" << std::endl;
+      }
+
+      for (std::string channel : this->joinedChannels) {
+        this->join(channel);
+      }
+
     } else if (msg->type == ix::WebSocketMessageType::Error) {
       std::cout << "Connection error: " << msg->errorInfo.reason << std::endl;
     }
