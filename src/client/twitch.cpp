@@ -1,9 +1,14 @@
 #include "twitch.h"
+#include "../utils/string.h"
+#include <algorithm>
+#include <ios>
 #include <iostream>
 #include <ixwebsocket/IXNetSystem.h>
 #include <ixwebsocket/IXUserAgent.h>
 #include <ixwebsocket/IXWebSocket.h>
+#include <optional>
 #include <string>
+#include <vector>
 
 TwitchIRCClient::TwitchIRCClient(std::string username, std::string password) {
   this->username = username;
@@ -23,6 +28,36 @@ void TwitchIRCClient::connect() {
   this->ws.setOnMessageCallback([this](const ix::WebSocketMessagePtr &msg) {
     if (msg->type == ix::WebSocketMessageType::Message) {
       std::cout << "received message: " << msg->str << std::endl;
+
+      std::vector<std::string> vec = split(msg->str, "\n");
+
+      for (std::string m : vec) {
+        m.erase(std::remove_if(
+                    m.begin(), m.end(),
+                    [](char c) { return c == '\n' || c == '\r' || c == '\t'; }),
+                m.end());
+
+        std::optional<IRCMessageType> type = define_message_type(m);
+        IRCMessageType mType;
+
+        if (!type.has_value()) {
+          continue;
+        } else {
+          mType = type.value();
+        }
+        if (mType == IRCMessageType::PrivmsgMessage) {
+          std::optional<IRCMessage<IRCMessageType::PrivmsgMessage>> message =
+              parse_message<IRCMessageType::PrivmsgMessage>(m);
+
+          if (!message.has_value()) {
+            std::cout << "this shit has no value" << std::endl;
+            continue;
+          }
+
+          this->_onPrivmsgMessage(message->message);
+        }
+      }
+
     } else if (msg->type == ix::WebSocketMessageType::Open) {
       std::cout << "Connection established" << std::endl;
 
