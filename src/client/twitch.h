@@ -1,3 +1,5 @@
+#pragma once
+
 #include "twitch_message.h"
 #include <ixwebsocket/IXWebSocket.h>
 #include <string>
