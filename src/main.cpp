@@ -1,5 +1,7 @@
 #include "client/twitch.h"
+#include "client/twitch_message.h"
 #include "env_options.h"
+#include "irc_handlers.h"
 #include <iostream>
 #include <optional>
 
@@ -15,9 +17,10 @@ int main(int argc, char *argv[]) {
 
   TwitchIRCClient ircClient(options->username, options->password);
 
-  ircClient.on<IRCMessageType::PrivmsgMessage>([&ircClient](std::string msg) {
-    ircClient.say("ilotterytea", "juuuuuuuuuuuuuuuuuuuustrl ");
-  });
+  ircClient.on<IRCMessageType::PrivmsgMessage>(
+      [&ircClient](IRCMessage<IRCMessageType::PrivmsgMessage> message) {
+        handle_chat_message(&ircClient, message);
+      });
 
   ircClient.connect();
   ircClient.join("ilotterytea");

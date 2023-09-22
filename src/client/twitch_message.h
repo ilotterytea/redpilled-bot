@@ -10,12 +10,6 @@
 
 enum IRCMessageType { PrivmsgMessage, NoticeMessage };
 
-template <IRCMessageType T> struct MessageHandler;
-
-template <> struct MessageHandler<IRCMessageType::PrivmsgMessage> {
-  using fn = std::function<void(std::string msg)>;
-};
-
 std::optional<IRCMessageType> define_message_type(const std::string &msg);
 
 struct MessageSender {
@@ -46,6 +40,13 @@ template <> struct IRCMessage<IRCMessageType::PrivmsgMessage> {
   MessageSource source;
   std::string message;
   std::string messageId;
+};
+
+template <IRCMessageType T> struct MessageHandler;
+
+template <> struct MessageHandler<IRCMessageType::PrivmsgMessage> {
+  using fn =
+      std::function<void(IRCMessage<IRCMessageType::PrivmsgMessage> message)>;
 };
 
 template <IRCMessageType T>

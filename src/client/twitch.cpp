@@ -54,7 +54,7 @@ void TwitchIRCClient::connect() {
             continue;
           }
 
-          this->_onPrivmsgMessage(message->message);
+          this->_onPrivmsgMessage(message.value());
         }
       }
 
