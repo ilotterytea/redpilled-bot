@@ -1,3 +1,4 @@
+#include "CommandLoader.h"
 #include "client/twitch.h"
 #include "client/twitch_message.h"
 #include "env_options.h"
@@ -16,6 +17,7 @@ int main(int argc, char *argv[]) {
   }
 
   TwitchIRCClient ircClient(options->username, options->password);
+  CommandLoader commandLoader;
 
   ircClient.on<IRCMessageType::PrivmsgMessage>(
       [&ircClient](IRCMessage<IRCMessageType::PrivmsgMessage> message) {
