@@ -13,6 +13,12 @@ void handle_chat_message(TwitchIRCClient *client, CommandLoader *commandLoader,
     client->say(message.source.name, "juuuuuuuuuuuuuuuuuuuustrl ");
   }
 
+  if (message.message[0] != DEFAULT_PREFIX) {
+    return;
+  }
+
+  message.message = message.message.substr(1, message.message.length());
+
   std::optional<std::vector<std::string>> response =
       commandLoader->run(message.message, message);
 
