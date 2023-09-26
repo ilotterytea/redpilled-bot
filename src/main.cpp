@@ -20,8 +20,9 @@ int main(int argc, char *argv[]) {
   CommandLoader commandLoader;
 
   ircClient.on<IRCMessageType::PrivmsgMessage>(
-      [&ircClient](IRCMessage<IRCMessageType::PrivmsgMessage> message) {
-        handle_chat_message(&ircClient, message);
+      [&ircClient,
+       &commandLoader](IRCMessage<IRCMessageType::PrivmsgMessage> message) {
+        handle_chat_message(&ircClient, &commandLoader, message);
       });
 
   ircClient.connect();
